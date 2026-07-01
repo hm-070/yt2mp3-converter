@@ -1,28 +1,9 @@
 import re
-from flask import Flask, render_template, request
 from yt_dlp import YoutubeDL
 
-app = Flask(__name__)
 
 def main():
     url = get_vidID_from_user_inp()
-
-@app.route("/")
-def home():
-    return render_template("index.html")
-
-@app.route("/download", methods=["POST"])
-def download():
-    url = request.form["url"]
-
-    options = {
-        'format':'bestaudio/best',
-        'outtmpl': 'downloads/%(title)s.%(ext)s',
-    }
-    with YoutubeDL(options) as ydl:
-        ydl.download([url])
-
-    return "Download Complete!"
 
 def get_vidID_from_user_inp():
     inp = input("Enter a Youtube URL: ")
@@ -63,6 +44,3 @@ def downloadAs_m4a(inp):
         error_code = ydl.download([inp])
         print(error_code)
     print("Finished!")
-
-if __name__ == "__main__":
-    app.run(debug=True)
