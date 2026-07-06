@@ -12,6 +12,8 @@ progress_value = 0
 downloadLoc = ""
 
 def start_download():
+    app.statusFrame.progressbar.set(0)
+    app.statusFrame.statusLabel.configure(text=f"Working...")
     want_m4a = app.optionsFrame.m4acheckBox.get()
     want_mp4 = app.optionsFrame.mp4checkBox.get()
     if want_m4a == 1:
@@ -29,14 +31,20 @@ def downloadAs_MP4():
         "writethumbnail": True,
         "embedthumbnail": True,
         "progress_hooks": [progress_hook],
+        "postprocessors": [
+        {
+            "key": "EmbedThumbnail",
+        }
+    ],
     }
     with YoutubeDL(options) as ydl:
         info = ydl.extract_info(inp, download=False)
-        title = info["title"]
-        app.statusFrame.statusLabel.configure(text=f"Downloading {title}")
-    with YoutubeDL(options) as ydl:
-        error_code = ydl.download([inp])
-        print(error_code)
+        if "entries" in info:
+            for video in info["entries"]:
+                app.statusFrame.statusLabel.configure(text=f"Downloading {video['title']}")
+                ydl.download(video["webpage_url"])
+        else:
+            ydl.download(inp)
     app.statusFrame.statusLabel.configure(text="Finished Downloading")
 
 def downloadAs_m4a():
@@ -52,12 +60,19 @@ def downloadAs_m4a():
         "postprocessors": [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'm4a',
-        }]
+        },
+        {
+            "key": "EmbedThumbnail",
+        },]
     }
-    app.statusFrame.statusLabel.configure(text="Downloading...")
     with YoutubeDL(options) as ydl:
-        error_code = ydl.download([inp])
-        print(error_code)
+        info = ydl.extract_info(inp, download=False)
+        if "entries" in info:
+            for video in info["entries"]:
+                app.statusFrame.statusLabel.configure(text=f"Downloading {video['title']}")
+                ydl.download(video["webpage_url"])
+        else:
+            ydl.download(inp)
     app.statusFrame.statusLabel.configure(text="Finished Downloading")
 
 def progress_hook(d):
