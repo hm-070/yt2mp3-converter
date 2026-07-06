@@ -2,6 +2,7 @@ import re
 from yt_dlp import YoutubeDL
 import customtkinter as ctk
 from tkinter import filedialog
+from pathlib import Path
 import threading
 
 #download progress global value
@@ -25,9 +26,14 @@ def downloadAs_MP4():
     options = {
         "format": "best",
         "outtmpl": str(downloadLoc / "%(title)s.%(ext)s"),
+        "writethumbnail": True,
+        "embedthumbnail": True,
         "progress_hooks": [progress_hook],
     }
-    app.statusFrame.statusLabel.configure(text="Downloading...")
+    with YoutubeDL(options) as ydl:
+        info = ydl.extract_info(inp, download=False)
+        title = info["title"]
+        app.statusFrame.statusLabel.configure(text=f"Downloading {title}")
     with YoutubeDL(options) as ydl:
         error_code = ydl.download([inp])
         print(error_code)
@@ -40,6 +46,8 @@ def downloadAs_m4a():
     options = {
         "format": "m4a/bestaudio/best",
         "outtmpl": str(downloadLoc / "%(title)s.%(ext)s"),
+        "writethumbnail": True,
+        "embedthumbnail": True,
         "progress_hooks": [progress_hook],
         "postprocessors": [{
             'key': 'FFmpegExtractAudio',
@@ -67,11 +75,11 @@ def update_progBar():
 
 def updateDownloadLabel():
     global downloadLoc
-    app.downloadFrame.downloadPath.configure(text=f"Download Location: {downloadLoc}")
+    app.downloadFrame.downloadPath.configure(text=f"Download Location: {str(downloadLoc)}")
 
 def changeDownloadLocation():
     global downloadLoc
-    downloadLoc = filedialog.askdirectory()
+    downloadLoc = Path(filedialog.askdirectory())
     updateDownloadLabel()
     print(downloadLoc)
 
@@ -90,7 +98,7 @@ class downloadFrame(ctk.CTkFrame):
         self.grid_columnconfigure(2, weight=1)
         self.urlEntry = ctk.CTkEntry(self, placeholder_text="Paste YouTube URL Here", width=400)
         self.button = ctk.CTkButton(self, text="Download", command=start_download)
-        self.downloadPath = ctk.CTkLabel(self, text=f"Download Location: {downloadLoc}")
+        self.downloadPath = ctk.CTkLabel(self, text=f"Download Location: {str(downloadLoc)}")
         self.changeDownloadLocButton = ctk.CTkButton(self, text="Change Download Location", command=changeDownloadLocation)
         self.urlEntry.grid(row=0 ,column=0, padx=20, pady=20, sticky="ew", columnspan=3)
         self.button.grid(row=1, column=1, padx=20, pady=20)
