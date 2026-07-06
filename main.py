@@ -1,10 +1,14 @@
 import re
 from yt_dlp import YoutubeDL
 import customtkinter as ctk
+from tkinter import filedialog
 import threading
 
 #download progress global value
 progress_value = 0
+
+#download location global value
+downloadLoc = ""
 
 def start_download():
     want_m4a = app.optionsFrame.m4acheckBox.get()
@@ -20,7 +24,7 @@ def downloadAs_MP4():
     inp = app.downloadFrame.urlEntry.get()
     options = {
         "format": "best",
-        "outtmpl": "%(title)s.%(ext)s",
+        "outtmpl": str(downloadLoc / "%(title)s.%(ext)s"),
         "progress_hooks": [progress_hook],
     }
     app.statusFrame.statusLabel.configure(text="Downloading...")
@@ -35,7 +39,7 @@ def downloadAs_m4a():
     inp = app.downloadFrame.urlEntry.get()
     options = {
         "format": "m4a/bestaudio/best",
-        "outtmpl": "%(title)s.%(ext)s",
+        "outtmpl": str(downloadLoc / "%(title)s.%(ext)s"),
         "progress_hooks": [progress_hook],
         "postprocessors": [{
             'key': 'FFmpegExtractAudio',
@@ -61,6 +65,16 @@ def update_progBar():
     app.statusFrame.progressbar.set(progress_value)
     app.after(100, update_progBar)
 
+def updateDownloadLabel():
+    global downloadLoc
+    app.downloadFrame.downloadPath.configure(text=f"Download Location: {downloadLoc}")
+
+def changeDownloadLocation():
+    global downloadLoc
+    downloadLoc = filedialog.askdirectory()
+    updateDownloadLabel()
+    print(downloadLoc)
+
 class top_frame(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
@@ -70,13 +84,18 @@ class top_frame(ctk.CTkFrame):
 class downloadFrame(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
+        global downloadLoc
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
         self.grid_columnconfigure(2, weight=1)
         self.urlEntry = ctk.CTkEntry(self, placeholder_text="Paste YouTube URL Here", width=400)
         self.button = ctk.CTkButton(self, text="Download", command=start_download)
+        self.downloadPath = ctk.CTkLabel(self, text=f"Download Location: {downloadLoc}")
+        self.changeDownloadLocButton = ctk.CTkButton(self, text="Change Download Location", command=changeDownloadLocation)
         self.urlEntry.grid(row=0 ,column=0, padx=20, pady=20, sticky="ew", columnspan=3)
         self.button.grid(row=1, column=1, padx=20, pady=20)
+        self.downloadPath.grid(row=2, column=1, padx=20, pady=20)
+        self.changeDownloadLocButton.grid(row=3, column=1, padx=20, pady=20)
 
 class statusFrame(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
@@ -112,7 +131,7 @@ class App(ctk.CTk):
         self.grid_columnconfigure(2, weight=1)
         self.grid_columnconfigure(3, weight=1)
 
-        self.geometry("800x600")
+        self.geometry("600x720")
 
         self.top_frame = top_frame(master=self)
         self.top_frame.grid(row=0, column=0, padx=20, pady=20, sticky="nsew", columnspan=4)
