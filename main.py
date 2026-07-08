@@ -7,9 +7,14 @@ import requests
 from io import BytesIO
 import math
 import threading
+import sys
+import os
 
-# Stage one gui done APART FROM FORMAT SELECTOR CHECK BOXES (cause need to actually be able to download stuff)
-# Stage two gui done APART FROM THUMBNAIL IMAGE (cause images suck)
+
+# Stage 3 gui done APART FROM ETA & CANCEL BUTTON
+# Havent even started on stage 4
+
+#Build Command is (MacOS):  
 
 downloadLoc = ""
 url = ""
@@ -249,6 +254,13 @@ class stageFour_End(ctk.CTkFrame):
 
 
 
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except AttributeError:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 def testRun():
     url="https://www.youtube.com/watch?v=isGNQILKM0A"
@@ -275,6 +287,7 @@ def startDownload():
         options = {
             "format": "m4a/bestaudio/best",
             "outtmpl": str(downloadLoc / "%(title)s.%(ext)s"),
+            "ffmpeg_location": resource_path("ffmpeg"),
             "writethumbnail": True,
             "embedthumbnail": True,
             "progress_hooks": [progress_hook],
@@ -291,6 +304,7 @@ def startDownload():
             "format": "bestvideo[height>=1080]+bestaudio/bestvideo+bestaudio/best",
             "merge_output_format": "mp4",
             "outtmpl": str(downloadLoc / "%(title)s.%(ext)s"),
+            "ffmpeg_location": resource_path("ffmpeg"),
             "writethumbnail": True,
             "embedthumbnail": True,
             "progress_hooks": [progress_hook],
@@ -309,16 +323,16 @@ def mainDownload():
             info = ydl.extract_info(inp, download=False)
             if "entries" in info:
                 for video in info["entries"]:
-                    stg3.statusLabel.configure(text=f"Downloading {video['title']}")
+                    app.after(0, lambda title=video["title"]: stg3.statusLabel.configure(text=f"Downloading {title}"))
                     ydl.download([video["webpage_url"]])
             else:
-                stg3.statusLabel.configure(text=f"Downloading {info['title']}")
+                app.after(0, lambda: stg3.statusLabel.configure(text=f"Downloading {info['title']}"))
                 ydl.download([inp])
     except Exception as e:
         print("Download failed:", e)
         import traceback
         traceback.print_exc()
-    stg3.statusLabel.configure(text="Finished Downloading")
+    app.after(0, lambda: stg3.statusLabel.configure(text="Finished Downloading"))
 
 def progress_hook(d):
     global progress_value
