@@ -6,8 +6,8 @@ a = Analysis(
     ["main.py"],
 
     binaries=[
-        ("ffmpeg/ffmpeg.exe", "ffmpeg"),
-        ("ffmpeg/ffprobe.exe", "ffmpeg"),
+        ("ffmpegWindows/ffmpeg.exe", "ffmpeg"),
+        ("ffmpegWindows/ffprobe.exe", "ffmpeg"),
     ],
 
     datas=[
