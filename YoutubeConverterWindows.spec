@@ -2,22 +2,31 @@
 
 icon = "icon.ico"
 
+from PyInstaller.utils.hooks import collect_all
+
+yt_dlp_datas, yt_dlp_binaries, yt_dlp_hidden = collect_all("yt_dlp")
+
+
 a = Analysis(
     ["main.py"],
+
+    pathex=[],
 
     binaries=[
         ("ffmpegWindows/ffmpeg.exe", "ffmpeg"),
         ("ffmpegWindows/ffprobe.exe", "ffmpeg"),
+        *yt_dlp_binaries,
     ],
 
     datas=[
         ("icon.ico", "."),
+        *yt_dlp_datas,
     ],
 
     hiddenimports=[
         "customtkinter",
         "PIL",
-        "yt_dlp",
+        *yt_dlp_hidden,
     ],
 )
 
