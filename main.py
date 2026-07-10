@@ -178,6 +178,7 @@ class stageTwo_Confirm(ctk.CTkFrame):
         wrappableToWinSize.append(self.thumbnailLabel)
 
 
+
 class stageThree_Dowload(ctk.CTkFrame):
     def __init__(self, parent):
         super().__init__(parent)
@@ -283,36 +284,69 @@ def startDownload():
     checkBoxes = app.stageList[stageOne_Start].chkBoxes
     m4aCheck = checkBoxes.m4acheckBox.get()
     mp4Check = checkBoxes.mp4checkBox.get()
-    if m4aCheck == 1:
-        options = {
-            "format": "m4a/bestaudio/best",
-            "outtmpl": str(downloadLoc / "%(title)s.%(ext)s"),
-            "ffmpeg_location": resource_path("ffmpeg"),
-            "writethumbnail": True,
-            "embedthumbnail": True,
-            "progress_hooks": [progress_hook],
-            "postprocessors": [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'm4a',
-            },
-            {
-                "key": "EmbedThumbnail",
-            },]
-        }
-    elif mp4Check == 1:
-        options = {
-            "format": "bestvideo[height>=1080]+bestaudio/bestvideo+bestaudio/best",
-            "merge_output_format": "mp4",
-            "outtmpl": str(downloadLoc / "%(title)s.%(ext)s"),
-            "ffmpeg_location": resource_path("ffmpeg"),
-            "writethumbnail": True,
-            "embedthumbnail": True,
-            "progress_hooks": [progress_hook],
-            "postprocessors": [
-            {
-                "key": "EmbedThumbnail",
-            },],
-        }
+    if sys.platform.startswith("win"):
+        if m4aCheck == 1:
+            options = {
+                "format": "m4a/bestaudio/best",
+                "outtmpl": str(downloadLoc / "%(title)s.%(ext)s"),
+                "ffmpeg_location": resource_path("ffmpegWindows"),
+                "writethumbnail": True,
+                "embedthumbnail": True,
+                "progress_hooks": [progress_hook],
+                "postprocessors": [{
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'm4a',
+                },
+                {
+                    "key": "EmbedThumbnail",
+                },]
+            }
+        elif mp4Check == 1:
+            options = {
+                "format": "bestvideo[height>=1080]+bestaudio/bestvideo+bestaudio/best",
+                "merge_output_format": "mp4",
+                "outtmpl": str(downloadLoc / "%(title)s.%(ext)s"),
+                "ffmpeg_location": resource_path("ffmpegWindows"),
+                "writethumbnail": True,
+                "embedthumbnail": True,
+                "progress_hooks": [progress_hook],
+                "postprocessors": [
+                {
+                    "key": "EmbedThumbnail",
+                },],
+            }
+    elif sys.platform == "darwin":
+        if m4aCheck == 1:
+            options = {
+                "format": "m4a/bestaudio/best",
+                "outtmpl": str(downloadLoc / "%(title)s.%(ext)s"),
+                "ffmpeg_location": resource_path("ffmpegMac"),
+                "writethumbnail": True,
+                "embedthumbnail": True,
+                "progress_hooks": [progress_hook],
+                "postprocessors": [{
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'm4a',
+                },
+                {
+                    "key": "EmbedThumbnail",
+                },]
+            }
+        elif mp4Check == 1:
+            options = {
+                "format": "bestvideo[height>=1080]+bestaudio/bestvideo+bestaudio/best",
+                "merge_output_format": "mp4",
+                "outtmpl": str(downloadLoc / "%(title)s.%(ext)s"),
+                "ffmpeg_location": resource_path("ffmpegMac"),
+                "writethumbnail": True,
+                "embedthumbnail": True,
+                "progress_hooks": [progress_hook],
+                "postprocessors": [
+                {
+                    "key": "EmbedThumbnail",
+                },],
+            }
+
     threading.Thread(target=mainDownload, daemon=True).start()
 
 def mainDownload():
