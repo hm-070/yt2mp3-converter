@@ -293,13 +293,17 @@ def startDownload():
                 "writethumbnail": True,
                 "embedthumbnail": True,
                 "progress_hooks": [progress_hook],
-                "postprocessors": [{
-                    'key': 'FFmpegExtractAudio',
-                    'preferredcodec': 'm4a',
-                },
-                {
-                    "key": "EmbedThumbnail",
-                },]
+                "cookiesfrombrowser": ("firefox",),
+                "postprocessors": [
+                    {
+                        "key": "FFmpegExtractAudio",
+                        "preferredcodec": "m4a",
+                    },
+                    {
+                        "key": "EmbedThumbnail",
+                    },
+                ],
+            }
             }
         elif mp4Check == 1:
             options = {
@@ -310,6 +314,7 @@ def startDownload():
                 "writethumbnail": True,
                 "embedthumbnail": True,
                 "progress_hooks": [progress_hook],
+                "cookiesfrombrowser": ("firefox",),
                 "postprocessors": [
                 {
                     "key": "EmbedThumbnail",
@@ -324,6 +329,7 @@ def startDownload():
                 "writethumbnail": True,
                 "embedthumbnail": True,
                 "progress_hooks": [progress_hook],
+                "cookiesfrombrowser": ("firefox",),
                 "postprocessors": [{
                     'key': 'FFmpegExtractAudio',
                     'preferredcodec': 'm4a',
@@ -341,6 +347,7 @@ def startDownload():
                 "writethumbnail": True,
                 "embedthumbnail": True,
                 "progress_hooks": [progress_hook],
+                "cookiesfrombrowser": ("firefox",),
                 "postprocessors": [
                 {
                     "key": "EmbedThumbnail",
