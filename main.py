@@ -134,7 +134,7 @@ class stageTwo_Confirm(ctk.CTkFrame):
 
     #called in saveURL in stage one
     def getMetadata(self):
-        with YoutubeDL() as ydl:
+        with YoutubeDL({"cookiesfrombrowser": ("firefox",)}) as ydl:
             self.info = ydl.extract_info(url, download=False)
 
         global wrappableToWinSize
