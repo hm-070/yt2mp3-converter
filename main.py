@@ -152,8 +152,7 @@ class stageTwo_Confirm(ctk.CTkFrame):
             durationLabel = ctk.CTkLabel(self, text=f"Duration: {dur}")
             durationLabel.grid(row=5, column=1, padx=20, pady=20)
             wrappableToWinSize.append(durationLabel)
-
-        self.loadThumbnailImage(self.info['thumbnail'])
+            self.loadThumbnailImage(self.info['thumbnail'])
 
     def getDur(self, rawDur):
         rtn = ""
