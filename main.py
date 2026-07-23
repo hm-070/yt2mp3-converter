@@ -147,10 +147,11 @@ class stageTwo_Confirm(ctk.CTkFrame):
         channelLabel.grid(row=3, column=1, padx=20, pady=20)
         wrappableToWinSize.append(channelLabel)
 
-        dur = self.getDur(self.info['duration'])
-        durationLabel = ctk.CTkLabel(self, text=f"Duration: {dur}")
-        durationLabel.grid(row=5, column=1, padx=20, pady=20)
-        wrappableToWinSize.append(durationLabel)
+        if self.info.get("_type") != "playlist":
+            dur = self.getDur(self.info['duration'])
+            durationLabel = ctk.CTkLabel(self, text=f"Duration: {dur}")
+            durationLabel.grid(row=5, column=1, padx=20, pady=20)
+            wrappableToWinSize.append(durationLabel)
 
         self.loadThumbnailImage(self.info['thumbnail'])
 
