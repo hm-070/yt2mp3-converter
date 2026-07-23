@@ -304,7 +304,6 @@ def startDownload():
                     },
                 ],
             }
-            }
         elif mp4Check == 1:
             options = {
                 "format": "bestvideo[height>=1080]+bestaudio/bestvideo+bestaudio/best",
